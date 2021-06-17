@@ -1,0 +1,118 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const ayarlar = require('./ayarlar.json');
+
+var prefix = ayarlar.prefix
+
+client.on('ready', () => {
+  console.log(`Bot Başlatıldı`);
+  client.user.setActivity('Green Hell', { type: 'PLAYING' })
+  .then(presence => console.log(`Durum ${presence.activities[0].name} oldu.`))
+  .catch(console.error);
+});
+
+client.on('message', message => {
+  if (message.content.startsWith('oylama')) {
+    const args = message.content.split(' ').slice(1)
+    const botmesajı = args.join(" ")
+    if (!message.member.hasPermission('ADMINISTRATOR')) return message.reply('**OYLAMA** Yapmak için yönetici olmalısınız.');
+    if (!botmesajı) return message.reply('Oylamanın ne olduğunu yazmadın mal.');
+    message.delete(message.author)
+    const embed = new Discord.MessageEmbed()
+    .setTitle('OYLAMA')
+    .setDescription(botmesajı)
+    .setColor('RANDOM')
+    .setFooter('By Vezir');
+    message.channel.send({ embed: embed }).then( embedMessage => {
+      embedMessage.react("✔️")
+      embedMessage.react("❌")
+    })
+  }
+})
+
+client.on('message', msg => {
+  if (msg.content.toLowerCase() === 'sa') {
+    msg.channel.send('Aleyküm Selam, Bebeğim');
+  }
+});
+
+client.on('message', msg => {
+  if (msg.content.toLowerCase() === prefix + 'sahip') {
+    msg.channel.send('<@836413920460931103>, İnstagram** : vezir.mp4, **YouTube** : Vezir Edit, **TikTok** : vezirmp4');
+  }
+});
+
+client.login(ayarlar.token);
+
+
+ // Oynuyor Kısmı
+  
+      var actvs = [
+        `${prefix}yardım ${client.guilds.cache.size} sunucuyu`,
+        `${prefix}yardım ${client.users.cache.size} Kullanıcıyı`, 
+        `${prefix}yardım`
+    ];
+    
+    client.user.setActivity('HAYALLERİMLE🥀', { type: 'PLAYING' });
+    
+  
+      console.log ('_________________________________________');
+      console.log (`Kullanıcı İsmi     : ${client.user.username}`);
+      console.log (`Sunucular          : ${client.guilds.cache.size}`);
+      console.log (`Kullanıcılar       : ${client.users.cache.size}`);
+      console.log (`Prefix             : ?`);
+      console.log (`Durum              : Bot Çevrimiçi!`);
+      console.log ('_________________________________________');
+    
+  });
+
+
+  module.exports = {
+    kod: "mute",
+    async (message, args){
+        const target = message.mentions.users.firts();
+        if(target){
+            let mainRole = message.guild.roles.cache.find(role => role.name === 'member');
+            let mainRole = message.guild.roles.cache.find(role => role.name === 'mute');
+
+            let memberTarget = message.guild.members.cache.get(target.id);
+
+            memberTarget.roles.remove(mainRole.id);
+            memberTarget.roles.add(mainRole.id);
+            message.channel.send(`${memberTarget.user.id}> Kişi mutelenmiştir`);
+        } else {
+       message.channel.send('Kişiyi muteleyemem')
+        }
+
+        }
+    }
+
+
+
+    module.exports = {
+    kod: "reklam-engel",
+    async run (client, message, args) {
+        const { MessageEmbed } = require("discord.js")
+        const db = require('quick.db')
+        if (!message.member.hasPermission('ADMINISTRATOR')) return message.reply('**REKLAM ENGEL** Açmak için yönetici olmalısınız.');
+        if (!args[0]) return message.channel.send("Litfen `aç` ya da `kapat` yazınız.")
+        let ayar = args[0].toLowerCase()
+        if (ayar === "aç") {
+            db.set("reklam" + message.guild.id, "açık")
+            const embed = new MessageEmbed()
+            .setTitle("Reklam Engel Ayarı Değiştirildi")
+            .setDescription("Başarıyla `Reklam Engel Açıldı`")
+            .setColor("GREEN")
+        } else if (ayar ===  "kapat") {
+            if (!db.has("reklam" + message.guild.id)) return message.reply("Reklam engel kodunu kapatmak için açmanız gerekir")
+            db.delete("reklam" + message.guild.id)
+            const embed = new MessageEmbed()
+            .setTitle("Reklam Engel Ayarı Değiştirildi")
+            .setDescription("Başarıyla `Reklam Engel Kapatıldı`")
+            .setColor("RED")
+        }else {
+            message.reply("Lütfen `aç` veya `kapat` yazınız")
+
+        }
+    }
+}
